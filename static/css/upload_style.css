@@ -1,0 +1,106 @@
+.container {
+    max-width: 1200px;
+}
+
+/* Page title */
+.page-title {
+    margin-bottom: 30px;
+    color: #0d6efd;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 15px;
+}
+
+/* Cards */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    border: none;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Forms */
+.form-label {
+    font-weight: 500;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Tables */
+.table {
+    font-size: 0.95rem;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+/* Badges */
+.badge-extra-data {
+    color: #198754;
+    font-size: 1.2rem;
+}
+
+.badge-no-extra-data {
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+/* Links */
+.model-link {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.model-link:hover {
+    text-decoration: underline;
+}
+
+/* Chart container */
+.chart-container {
+    height: 400px;
+    margin-bottom: 20px;
+}
+
+/* Upload page specific styles */
+.model-details-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.model-details-container h5 {
+    margin-bottom: 20px;
+    color: #495057;
+}
+
+/* Success modal styling */
+.modal-content {
+    border-radius: 8px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+}

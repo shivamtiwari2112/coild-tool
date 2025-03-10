@@ -1,0 +1,346 @@
+{
+  "mucs": {
+    "hi": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 9.5,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 7.2,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 8.1,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 8.9,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 6.8,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ],
+    "mr": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 11.7,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 8.5,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 9.8,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 10.5,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 8.1,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ],
+    "gu": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 14.3,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 10.2,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 12.1,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 13.0,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 9.8,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ],
+    "or": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 20.6,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 15.3,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 17.5,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 18.2,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 14.8,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ],
+    "ta": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 19.5,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 14.2,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 16.8,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 17.5,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 13.7,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ]
+  },
+  "openslr": {
+    "te": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 15.1,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 11.0,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 12.5,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 13.2,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 10.5,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ]
+  },
+  "kathbath": {
+    "hi": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 8.9,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 6.5,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 7.3,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 7.8,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 6.0,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ]
+  },
+  "shrutilipi": {
+    "hi": [
+      {
+        "model": "IndicWav2Vec",
+        "test_wer": 9.2,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2105.03595",
+        "code": "https://github.com/AI4Bharat/IndicWav2Vec"
+      },
+      {
+        "model": "Whisper",
+        "test_wer": 7.1,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2212.04356",
+        "code": "https://github.com/openai/whisper"
+      },
+      {
+        "model": "XLS-R",
+        "test_wer": 8.0,
+        "year": 2020,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2111.09296",
+        "code": "https://github.com/pytorch/fairseq"
+      },
+      {
+        "model": "HuBERT",
+        "test_wer": 8.5,
+        "year": 2021,
+        "extra_training_data": false,
+        "paper": "https://arxiv.org/abs/2106.07447",
+        "code": "https://github.com/facebookresearch/fairseq"
+      },
+      {
+        "model": "mSLAM",
+        "test_wer": 6.5,
+        "year": 2022,
+        "extra_training_data": true,
+        "paper": "https://arxiv.org/abs/2305.10599",
+        "code": "https://github.com/microsoft/SpeechT5"
+      }
+    ]
+  }
+}
