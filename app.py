@@ -202,6 +202,9 @@ import os
 import pandas as pd
 from werkzeug.utils import secure_filename
 import uuid
+import subprocess
+import virtualenv
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'  # For flash messages
@@ -235,6 +238,141 @@ def save_data(data):
     os.makedirs('data', exist_ok=True)
     with open('data/asr_data.json', 'w') as f:
         json.dump(data, f, indent=2)
+
+
+@app.route('/create-environment', methods=['GET', 'POST'])
+def create_environment():
+    if request.method == 'GET':
+        # For GET requests, load available models for the dropdown
+        data = load_data()
+        models = []
+        
+        # Extract all models from the data structure
+        for dataset in data:
+            for language in data[dataset]:
+                for model in data[dataset][language]:
+                    if 'model' in model and 'model_id' in model:
+                        models.append({
+                            'id': model['model_id'],
+                            'name': f"{model['model']} ({dataset}/{language})"
+                        })
+        
+        return render_template('create-environment.html', models=models)
+    
+    elif request.method == 'POST':
+        # For POST requests, create the environment
+        if request.content_type == 'application/json':
+            # Handle AJAX JSON request
+            data = request.json
+        else:
+            # Handle regular form submission (fallback)
+            data = request.form
+        
+        environment_name = data.get('environment_name')
+        python_version = data.get('python_version')
+        selected_model_id = data.get('selected_model')
+        custom_install_commands = data.get('custom_install_commands', {})
+        
+        # Validate required fields
+        if not environment_name or not python_version or not selected_model_id:
+            response = {
+                'success': False,
+                'message': 'Missing required fields'
+            }
+            return jsonify(response)
+        
+        try:
+            # Create environment directory
+            env_dir = os.path.join('environments', environment_name)
+            os.makedirs(env_dir, exist_ok=True)
+            
+            # Create virtual environment
+            virtualenv.create_environment(env_dir, site_packages=False)
+            
+            # Get model details and requirements file
+            model_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'models', selected_model_id)
+            requirements_path = os.path.join(model_dir, 'requirements.txt')
+            
+            # Install dependencies from requirements.txt
+            if os.path.exists(requirements_path):
+                # Determine pip executable path based on OS
+                pip_path = os.path.join(env_dir, 'bin', 'pip') if os.name != 'nt' else os.path.join(env_dir, 'Scripts', 'pip')
+                
+                # Install each dependency
+                with open(requirements_path, 'r') as f:
+                    for line in f:
+                        dependency = line.strip()
+                        if not dependency or dependency.startswith('#'):
+                            continue
+                            
+                        # Parse package name
+                        package_name = dependency.split('==')[0].split('>=')[0].split('<=')[0].strip()
+                        
+                        # Check if there's a custom install command
+                        if package_name in custom_install_commands and custom_install_commands[package_name]:
+                            install_cmd = custom_install_commands[package_name]
+                            subprocess.run(f"{pip_path} {install_cmd}", shell=True, check=True)
+                        else:
+                            subprocess.run([pip_path, 'install', dependency], check=True)
+            
+            # Save environment metadata
+            metadata = {
+                'name': environment_name,
+                'python_version': python_version,
+                'model_id': selected_model_id,
+                'created_at': datetime.datetime.now().isoformat(),
+            }
+            
+            with open(os.path.join(env_dir, 'metadata.json'), 'w') as f:
+                json.dump(metadata, f, indent=2)
+            
+            response = {
+                'success': True,
+                'message': f'Environment {environment_name} created successfully'
+            }
+            return jsonify(response)
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            response = {
+                'success': False,
+                'message': str(e)
+            }
+            return jsonify(response)
+
+@app.route('/api/model-dependencies/<model_id>')
+def get_model_dependencies(model_id):
+    """API endpoint to get a model's dependencies"""
+    model_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'models', model_id)
+    requirements_path = os.path.join(model_dir, 'requirements.txt')
+    
+    dependencies = []
+    
+    if os.path.exists(requirements_path):
+        with open(requirements_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                    
+                # Parse dependency information
+                parts = line.split('==')
+                if len(parts) == 2:
+                    dependencies.append({
+                        'name': parts[0].strip(),
+                        'version': parts[1].strip()
+                    })
+                else:
+                    # Handle other formats like >=, <=, etc.
+                    name_parts = line.split('>=') if '>=' in line else (line.split('<=') if '<=' in line else [line, ''])
+                    dependencies.append({
+                        'name': name_parts[0].strip(),
+                        'version': name_parts[1].strip() if len(name_parts) > 1 else None
+                    })
+    
+    return jsonify({'dependencies': dependencies})
+
 
 @app.route('/')
 def index():
@@ -418,5 +556,5 @@ def get_languages():
 if __name__ == '__main__':
     # Create uploads directory if it doesn't exist
     os.makedirs('uploads', exist_ok=True)
-    
+    os.makedirs('environments', exist_ok=True)
     app.run(debug=True)

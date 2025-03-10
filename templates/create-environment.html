@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Environment - COIL-D ASR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="page-title">COIL-D ASR Benchmarking Tool</h1>
+        
+        <!-- Navigation Bar -->
+        <div class="navigation-container mb-4">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/upload">Upload Model</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/inference">Inference Model</a>
+                            </li>
+                            {% if user and user.is_dev %}
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/create-environment">Create Environment</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        {% if message %}
+        <div class="alert alert-{{ message_type }}" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Create Environment</h5>
+            </div>
+            <div class="card-body">
+                <form id="environment-form" action="/create-environment" method="post">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="environment-name" class="form-label">Environment Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="environment-name" name="environment_name" required>
+                            <div class="form-text">Enter a unique name for your environment</div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="python-version" class="form-label">Python Version <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="python-version" name="python_version" required placeholder="3.9.0">
+                            <div class="form-text">Enter a valid Python version</div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="select-model" class="form-label">Select Model <span class="text-danger">*</span></label>
+                            <select class="form-select" id="select-model" name="selected_model" required>
+                                <option value="" selected disabled>Choose a model...</option>
+                                {% for model in models %}
+                                <option value="{{ model.id }}">{{ model.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Select a model to load its dependencies</div>
+                        </div>
+                    </div>
+                    
+                    <div id="dependencies-container" class="mt-4 d-none">
+                        <h5>Dependencies</h5>
+                        <p class="text-muted mb-3">The following dependencies will be installed from the model's requirements.txt file</p>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="30%">Library Name</th>
+                                        <th width="20%">Dependency Version</th>
+                                        <th width="45%">Install Command (Optional)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dependencies-list">
+                                    <!-- Dependencies will be populated here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Create Environment and Install Dependencies</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Environment Created Successfully</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Your environment has been created successfully with all the specified dependencies.
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-primary">Go to Leaderboard</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle model selection to load dependencies
+            const modelSelector = document.getElementById('select-model');
+            const dependenciesContainer = document.getElementById('dependencies-container');
+            const dependenciesList = document.getElementById('dependencies-list');
+            
+            modelSelector.addEventListener('change', function() {
+                const modelId = this.value;
+                if (!modelId) {
+                    dependenciesContainer.classList.add('d-none');
+                    return;
+                }
+                
+                // Fetch dependencies for the selected model
+                fetch(`/api/model-dependencies/${modelId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        dependenciesList.innerHTML = '';
+                        
+                        if (data.dependencies && data.dependencies.length > 0) {
+                            data.dependencies.forEach((dep, index) => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>${dep.name}</td>
+                                    <td>${dep.version || '-'}</td>
+                                    <td>
+                                        <input type="text" class="form-control" 
+                                            name="install_command_${dep.name}" 
+                                            placeholder="Custom install command (optional)">
+                                    </td>
+                                `;
+                                dependenciesList.appendChild(row);
+                            });
+                            
+                            dependenciesContainer.classList.remove('d-none');
+                        } else {
+                            dependenciesList.innerHTML = '<tr><td colspan="4" class="text-center">No dependencies found</td></tr>';
+                            dependenciesContainer.classList.remove('d-none');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching dependencies:', error);
+                        dependenciesList.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading dependencies</td></tr>';
+                        dependenciesContainer.classList.remove('d-none');
+                    });
+            });
+            
+            // Form submission handler
+            const form = document.getElementById('environment-form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
+                
+                // Collect form data
+                const formData = new FormData(form);
+                
+                // Convert to JSON for submission
+                const formObject = {};
+                formData.forEach((value, key) => {
+                    formObject[key] = value;
+                });
+                
+                // Custom install commands
+                const customCommands = {};
+                document.querySelectorAll('input[name^="install_command_"]').forEach(input => {
+                    if (input.value) {
+                        const libName = input.name.replace('install_command_', '');
+                        customCommands[libName] = input.value;
+                    }
+                });
+                formObject.custom_install_commands = customCommands;
+                
+                // Submit the form data
+                fetch('/create-environment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                    
+                    if (data.success) {
+                        // Show success modal
+                        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+                    } else {
+                        // Show error message
+                        alert(`Error: ${data.message || 'Failed to create environment'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                    alert('An error occurred while creating the environment');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

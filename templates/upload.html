@@ -11,14 +11,33 @@
 
 <body>
     <div class="container">
-        <h1 class="page-title">COIL-D ASR Model Upload</h1>
-        
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Leaderboard</a></li>
-                <li class="breadcrumb-item active">Upload Model</li>
-            </ol>
-        </nav>
+        <h1 class="page-title">COIL-D ASR Benchmarking Tool</h1>        
+        <div class="navigation-container mb-4">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/upload">Upload Model</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/inference">Inference Model</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/create-environment">Create Environment</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
         
         {% if message %}
         <div class="alert alert-{{ message_type }}" role="alert">
@@ -28,7 +47,7 @@
         
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Upload Your ASR Model</h5>
+                <h5 class="mb-0" style="text-align: center;">Upload Your ASR Model</h5>
             </div>
             <div class="card-body">
                 <form id="model-upload-form" action="/upload" method="post" enctype="multipart/form-data">
