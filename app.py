@@ -1,202 +1,5 @@
-# # app.py
-# from flask import Flask, render_template, request, jsonify
-# import json
-# import os
-# import pandas as pd
-
-# app = Flask(__name__)
-
-# # Load data from a JSON file
-# def load_data():
-#     if os.path.exists('data/asr_data.json'):
-#         with open('data/asr_data.json', 'r') as f:
-#             return json.load(f)
-#     # return create_default_data()
-
-# # Create default data if none exists
-# # def create_default_data():
-#     # try:
-#     #     # Create a pandas DataFrame with the data
-#     #     base_df = pd.DataFrame({
-#     #         "Dataset": ["mucs", "mucs", "mucs", "mucs", "mucs", "openslr", "kathbath", "shrutilipi"],
-#     #         "Language": ["hi", "mr", "gu", "or", "ta", "te", "hi", "hi"],
-#     #         "IndicWav2Vec": [9.5, 11.7, 14.3, 20.6, 19.5, 15.1, 8.9, 9.2],
-#     #         "Whisper": [7.2, 8.5, 10.2, 15.3, 14.2, 11.0, 6.5, 7.1],
-#     #         "XLS-R": [8.1, 9.8, 12.1, 17.5, 16.8, 12.5, 7.3, 8.0],
-#     #         "HuBERT": [8.9, 10.5, 13.0, 18.2, 17.5, 13.2, 7.8, 8.5],
-#     #         "mSLAM": [6.8, 8.1, 9.8, 14.8, 13.7, 10.5, 6.0, 6.5]
-#     #     })
-        
-#     #     # Model metadata
-#     #     model_metadata = {
-#     #         "IndicWav2Vec": {
-#     #             "Year": 2020,
-#     #             "Extra_Training": True,
-#     #             "Papers": "https://arxiv.org/abs/2105.03595",
-#     #             "Code": "https://github.com/AI4Bharat/IndicWav2Vec",
-#     #         },
-#     #         "Whisper": {
-#     #             "Year": 2022,
-#     #             "Extra_Training": True,
-#     #             "Papers": "https://arxiv.org/abs/2212.04356",
-#     #             "Code": "https://github.com/openai/whisper",
-#     #         },
-#     #         "XLS-R": {
-#     #             "Year": 2020,
-#     #             "Extra_Training": True,
-#     #             "Papers": "https://arxiv.org/abs/2111.09296",
-#     #             "Code": "https://github.com/pytorch/fairseq",
-#     #         },
-#     #         "HuBERT": {
-#     #             "Year": 2021,
-#     #             "Extra_Training": False,
-#     #             "Papers": "https://arxiv.org/abs/2106.07447",
-#     #             "Code": "https://github.com/facebookresearch/fairseq",
-#     #         },
-#     #         "mSLAM": {
-#     #             "Year": 2022,
-#     #             "Extra_Training": True,
-#     #             "Papers": "https://arxiv.org/abs/2305.10599",
-#     #             "Code": "https://github.com/microsoft/SpeechT5"
-#     #         }
-#     #     }
-        
-#     #     # Create output structure
-#     #     output_data = {}
-        
-#     #     # Get unique datasets and languages
-#     #     datasets = base_df["Dataset"].unique()
-        
-#     #     for dataset in datasets:
-#     #         output_data[dataset] = {}
-            
-#     #         # Filter dataset rows
-#     #         dataset_df = base_df[base_df["Dataset"] == dataset]
-            
-#     #         for _, row in dataset_df.iterrows():
-#     #             language = row["Language"]
-                
-#     #             if language not in output_data[dataset]:
-#     #                 output_data[dataset][language] = []
-                
-#     #             # Add each model's data for this dataset and language
-#     #             for model_name in ["IndicWav2Vec", "Whisper", "XLS-R", "HuBERT", "mSLAM"]:
-#     #                 if not pd.isna(row[model_name]):  # Check if WER value exists
-#     #                     model_data = {
-#     #                         "model": model_name,
-#     #                         "test_wer": row[model_name],
-#     #                         "year": model_metadata[model_name]["Year"],
-#     #                         "extra_training_data": model_metadata[model_name]["Extra_Training"],
-#     #                         "paper": model_metadata[model_name]["Papers"],
-#     #                         "code": model_metadata[model_name]["Code"]
-#     #                     }
-                        
-#     #                     output_data[dataset][language].append(model_data)
-        
-#     #     # Create directories
-#     #     os.makedirs('data', exist_ok=True)
-        
-#     #     # Save the data
-#     #     with open('data/asr_data.json', 'w') as f:
-#     #         json.dump(output_data, f, indent=2)
-        
-#     #     return output_data
-    
-#     # except Exception as e:
-#     #     print(f"Error creating default data: {e}")
-        
-#     #     # Return a minimal sample structure as fallback
-#     #     return {
-#     #         "mucs": {
-#     #             "hi": [
-#     #                 {"model": "mSLAM", "test_wer": 6.8, "year": 2022, "extra_training_data": True, "paper": "https://arxiv.org/abs/2305.10599", "code": "https://github.com/microsoft/SpeechT5"},
-#     #                 {"model": "Whisper", "test_wer": 7.2, "year": 2022, "extra_training_data": True, "paper": "https://arxiv.org/abs/2212.04356", "code": "https://github.com/openai/whisper"}
-#     #             ]
-#     #         }
-#     #     }
-
-# @app.route('/')
-# def index():
-#     data = load_data()
-    
-#     # Get all available datasets
-#     datasets = list(data.keys())
-    
-#     # Default to first dataset if available, or use query parameter
-#     selected_dataset = request.args.get('dataset', datasets[0] if datasets else None)
-    
-#     # Initialize variables with defaults
-#     languages = []
-#     selected_language = None
-#     models = []
-    
-#     if selected_dataset and selected_dataset in data:
-#         # Get all languages for the selected dataset
-#         languages = list(data[selected_dataset].keys())
-        
-#         # Default to first language if available, or use query parameter
-#         selected_language = request.args.get('language', languages[0] if languages else None)
-        
-#         if selected_language and selected_language in data[selected_dataset]:
-#             # Get models for the selected dataset and language
-#             models_data = data[selected_dataset][selected_language]
-            
-#             # Ensure all models have the required fields
-#             for model in models_data:
-#                 if 'test_wer' not in model:
-#                     # If 'test_wer' is missing but 'wer' exists, use that
-#                     if 'wer' in model:
-#                         model['test_wer'] = model['wer']
-#                     else:
-#                         # Otherwise set a default value
-#                         model['test_wer'] = 100.0  # Default high WER
-            
-#             # Sort models by WER (ascending)
-#             models = sorted(models_data, key=lambda x: x.get('test_wer', 100.0))
-            
-#             # Add rank to each model
-#             for i, model in enumerate(models):
-#                 model['rank'] = i + 1
-    
-#     return render_template('index.html', 
-#                           datasets=datasets,
-#                           languages=languages,
-#                           selected_dataset=selected_dataset,
-#                           selected_language=selected_language,
-#                           models=models)
-
-# @app.route('/api/data')
-# def get_data():
-#     data = load_data()
-#     dataset = request.args.get('dataset')
-#     language = request.args.get('language')
-    
-#     if dataset in data and language in data[dataset]:
-#         return jsonify(data[dataset][language])
-#     return jsonify([])
-
-# @app.route('/api/datasets')
-# def get_datasets():
-#     data = load_data()
-#     return jsonify(list(data.keys()))
-
-# @app.route('/api/languages')
-# def get_languages():
-#     data = load_data()
-#     dataset = request.args.get('dataset')
-    
-#     if dataset in data:
-#         return jsonify(list(data[dataset].keys()))
-#     return jsonify([])
-
-# if __name__ == '__main__':
-    
-#     app.run(debug=True)
-
-
-
 # app.py
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, Response, stream_with_context
 import json
 import os
 import pandas as pd
@@ -205,14 +8,28 @@ import uuid
 import subprocess
 import virtualenv
 import datetime
+import tempfile
+import sys
+import shutil
+import time
+import importlib.util
+import logging
+from asr_script import transcribe_audio
+# Add these imports at the top of your file if needed
+from datetime import datetime
+import re
+from io import StringIO
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'  # For flash messages
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'uploads' # model upload folder
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max upload size
+app.config['UPLOAD_AUDIO_FOLDER'] = 'audio_uploads'
+
 
 # Ensure upload directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['UPLOAD_AUDIO_FOLDER'], exist_ok=True)
 os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'models'), exist_ok=True)
 
 # Allowed file extensions
@@ -238,6 +55,258 @@ def save_data(data):
     os.makedirs('data', exist_ok=True)
     with open('data/asr_data.json', 'w') as f:
         json.dump(data, f, indent=2)
+
+
+
+# Add this route to your app.py file
+@app.route('/model_inference', methods=['GET', 'POST'])
+def model_inference():
+    data = load_data()
+    
+    # Get all available datasets
+    datasets = list(data.keys())
+    
+    # Get current year for the form's default value
+    current_year = datetime.now().year
+    
+    if request.method == 'POST':
+        # Get form data
+        dataset = request.form.get('dataset')
+        language = request.form.get('language')
+        model_name = request.form.get('model_name')
+        year = request.form.get('year', current_year)
+        paper_url = request.form.get('paper_url', '#')
+        code_url = request.form.get('code_url', '#')
+        extra_training_data = 'extra_training_data' in request.form
+        
+        # Get uploaded output file
+        if 'output_file' not in request.files or not request.files['output_file'].filename:
+            flash('Output file is required', 'danger')
+            return render_template('model_inference.html', datasets=datasets, current_year=current_year)
+        
+        output_file = request.files['output_file']
+        
+        # Check file type and read content
+        if not output_file.filename.endswith('.txt'):
+            flash('Only .txt files are allowed', 'danger')
+            return render_template('model_inference.html', datasets=datasets, current_year=current_year)
+        
+        # Read and process the output file
+        output_text = output_file.read().decode('utf-8')
+        
+        # Compute WER using the ground truth for the selected dataset and language
+        wer_result = compute_wer(dataset, language, output_text)
+        
+        # Generate a temporary model ID
+        model_id = str(uuid.uuid4())
+        
+        # Get existing models for this dataset and language
+        existing_models = []
+        if dataset in data and language in data[dataset]:
+            existing_models = data[dataset][language]
+        
+        # Create new model entry
+        new_model = {
+            "model": model_name,
+            "test_wer": wer_result,
+            "year": int(year) if year else current_year,
+            "extra_training_data": extra_training_data,
+            "paper": paper_url if paper_url else "#",
+            "code": code_url if code_url else "#",
+            "model_id": model_id,
+            "is_new_submission": True  # Flag to highlight in the table
+        }
+        
+        # Insert new model and sort all models by WER
+        all_models = existing_models + [new_model]
+        all_models = sorted(all_models, key=lambda x: float(x.get('test_wer', 100.0)))
+        
+        # Add rank to each model
+        for i, model in enumerate(all_models):
+            model['rank'] = i + 1
+        
+        # Create results summary
+        results = {
+            'model_id': model_id,
+            'model_name': model_name,
+            'test_wer': wer_result,
+            'rank': new_model['rank'],
+            'dataset': dataset,
+            'language': language
+        }
+        
+        # Store the new model in session for later addition to leaderboard if requested
+        if 'temp_models' not in app.config:
+            app.config['temp_models'] = {}
+        app.config['temp_models'][model_id] = {
+            'model': new_model,
+            'dataset': dataset,
+            'language': language
+        }
+        
+        return render_template('model_inference.html', 
+                              datasets=datasets,
+                              languages=get_languages_for_dataset(dataset),
+                              selected_dataset=dataset,
+                              selected_language=language,
+                              current_year=current_year,
+                              results=results,
+                              models=all_models)
+    
+    # GET request - just show the form
+    return render_template('model_inference.html', 
+                          datasets=datasets,
+                          current_year=current_year)
+
+# Route to save evaluated model to the leaderboard
+@app.route('/save_to_leaderboard', methods=['POST'])
+def save_to_leaderboard():
+    model_id = request.form.get('model_id')
+    
+    if not model_id or 'temp_models' not in app.config or model_id not in app.config['temp_models']:
+        flash('Model information not found', 'danger')
+        return redirect('/model_inference')
+    
+    # Get model data from temporary storage
+    temp_data = app.config['temp_models'][model_id]
+    model = temp_data['model']
+    dataset = temp_data['dataset']
+    language = temp_data['language']
+    
+    # Remove the highlight flag before saving to leaderboard
+    if 'is_new_submission' in model:
+        del model['is_new_submission']
+    
+    # Load current data
+    data = load_data()
+    
+    # Update the data structure
+    if dataset not in data:
+        data[dataset] = {}
+    
+    if language not in data[dataset]:
+        data[dataset][language] = []
+    
+    # Add model to the appropriate dataset/language
+    data[dataset][language].append(model)
+    
+    # Save the updated data
+    save_data(data)
+    
+    # Clean up the temporary storage
+    del app.config['temp_models'][model_id]
+    
+    flash(f'Model "{model["model"]}" has been added to the leaderboard', 'success')
+    return redirect(f'/?dataset={dataset}&language={language}')
+
+
+# Helper function to get languages for a specific dataset
+def get_languages_for_dataset(dataset):
+    data = load_data()
+    if dataset in data:
+        return list(data[dataset].keys())
+    return []
+
+# Helper function to compute WER
+def compute_wer(dataset, language, model_output):
+    """
+    Compute Word Error Rate by comparing model output against ground truth.
+    
+    Args:
+        dataset: The dataset name
+        language: The language name
+        model_output: The output text from the model to evaluate
+        
+    Returns:
+        float: The calculated WER percentage
+    """
+    try:
+        # Load ground truth data for the selected dataset and language
+        # You would need to implement this based on your data structure
+        # ground_truth = load_ground_truth(dataset, language)
+
+        with open('gt.txt', 'r', encoding='utf-8') as f:
+            ground_truth = f.read()
+        
+        if not ground_truth:
+            # If no ground truth available, return a default high WER
+            return 99.9
+        
+        # Normalize both texts for comparison
+        ground_truth_words = normalize_text(ground_truth).split()
+        model_output_words = normalize_text(model_output).split()
+        
+        # Calculate WER
+        # Simple implementation - you may want to use a more sophisticated approach
+        if len(ground_truth_words) == 0:
+            return 100.0
+        
+        # Calculate edit distance
+        distance = levenshtein_distance(ground_truth_words, model_output_words)
+        
+        # Calculate WER as a percentage
+        wer = (distance / len(ground_truth_words)) * 100
+        
+        # Round to one decimal place
+        return round(wer, 1)
+    
+    except Exception as e:
+        print(f"Error computing WER: {str(e)}")
+        return 99.9
+
+def normalize_text(text):
+    """Normalize text for WER calculation"""
+    # Convert to lowercase
+    text = text.lower()
+    
+    # Remove punctuation
+    text = re.sub(r'[^\w\s]', '', text)
+    
+    # Remove extra whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
+
+def levenshtein_distance(list1, list2):
+    """Calculate Levenshtein distance between two word lists"""
+    # Create a table to store results of subproblems
+    m, n = len(list1), len(list2)
+    dp = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+    
+    # Fill dp[][] in bottom up manner
+    for i in range(m + 1):
+        for j in range(n + 1):
+            # If first list is empty, insert all from list2
+            if i == 0:
+                dp[i][j] = j
+            # If second list is empty, remove all from list1
+            elif j == 0:
+                dp[i][j] = i
+            # If last characters are same, ignore last char
+            elif list1[i-1] == list2[j-1]:
+                dp[i][j] = dp[i-1][j-1]
+            # If last characters are different, consider all possibilities
+            else:
+                dp[i][j] = 1 + min(dp[i][j-1],      # Insert
+                                   dp[i-1][j],      # Remove
+                                   dp[i-1][j-1])    # Replace
+    
+    return dp[m][n]
+
+def load_ground_truth(dataset, language):
+    """
+    Load ground truth for a specific dataset and language.
+    This is a placeholder - implement based on your data structure.
+    """
+    # Example implementation - replace with your actual data loading logic
+    ground_truth_path = f"data/ground_truth/{dataset}/{language}/reference.txt"
+    
+    if os.path.exists(ground_truth_path):
+        with open(ground_truth_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    
+    # If no file exists, return empty string
+    return ""
 
 
 @app.route('/create-environment', methods=['GET', 'POST'])
@@ -424,7 +493,7 @@ def index():
                           selected_language=selected_language,
                           models=models)
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload_model', methods=['GET', 'POST'])
 def upload_model():
     data = load_data()
     datasets = list(data.keys())
@@ -438,21 +507,21 @@ def upload_model():
         # Validate required fields
         if not model_name:
             flash('Model name is required', 'danger')
-            return render_template('upload.html', datasets=datasets, message="Model name is required", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Model name is required", message_type="danger")
         
         if not dataset or not language:
             flash('Dataset and language are required', 'danger')
-            return render_template('upload.html', datasets=datasets, message="Dataset and language are required", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Dataset and language are required", message_type="danger")
         
         # Check required files
         if 'model_weights' not in request.files or not request.files['model_weights'].filename:
-            return render_template('upload.html', datasets=datasets, message="Model weights file is required", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Model weights file is required", message_type="danger")
         
         if 'requirements_file' not in request.files or not request.files['requirements_file'].filename:
-            return render_template('upload.html', datasets=datasets, message="Requirements file is required", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Requirements file is required", message_type="danger")
         
         if 'inference_file' not in request.files or not request.files['inference_file'].filename:
-            return render_template('upload.html', datasets=datasets, message="Inference file is required", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Inference file is required", message_type="danger")
         
         # Get files
         model_weights = request.files['model_weights']
@@ -461,20 +530,20 @@ def upload_model():
         
         # Validate file types
         if not allowed_file(model_weights.filename, 'model_weights'):
-            return render_template('upload.html', datasets=datasets, message="Invalid model weights file format", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Invalid model weights file format", message_type="danger")
         
         if not allowed_file(requirements_file.filename, 'requirements'):
-            return render_template('upload.html', datasets=datasets, message="Invalid requirements file format", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Invalid requirements file format", message_type="danger")
         
         if not allowed_file(inference_file.filename, 'inference'):
-            return render_template('upload.html', datasets=datasets, message="Invalid inference file format", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Invalid inference file format", message_type="danger")
         
         # Check file names
         if requirements_file.filename != 'requirements.txt':
-            return render_template('upload.html', datasets=datasets, message="Requirements file must be named 'requirements.txt'", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Requirements file must be named 'requirements.txt'", message_type="danger")
         
         if inference_file.filename != 'model_inference.py':
-            return render_template('upload.html', datasets=datasets, message="Inference file must be named 'model_inference.py'", message_type="danger")
+            return render_template('upload_model.html', datasets=datasets, message="Inference file must be named 'model_inference.py'", message_type="danger")
         
         # Create a unique folder for this model
         model_id = str(uuid.uuid4())
@@ -527,7 +596,10 @@ def upload_model():
         # Redirect with success query parameter
         return redirect(url_for('upload_model', success='true'))
     
-    return render_template('upload.html', datasets=datasets)
+    return render_template('upload_model.html', datasets=datasets)
+
+
+
 
 @app.route('/api/data')
 def get_data():
@@ -552,6 +624,71 @@ def get_languages():
     if dataset in data:
         return jsonify(list(data[dataset].keys()))
     return jsonify([])
+
+
+# Add the new route for inference
+@app.route('/upload_audio', methods=['GET', 'POST'])
+def upload_audio():
+    data = load_data()
+
+    # Get available models
+    models = []
+    for dataset in data:
+        for language in data[dataset]:
+            for model in data[dataset][language]:
+                if 'model' in model:
+                    models.append({"id": model['model'], "name": model['model']})
+
+    models = list({m['id']: m for m in models}.values())  # Remove duplicates
+
+    if request.method == 'POST':
+        model_id = request.form.get('model_id')
+        language = request.form.get('language')
+        files = request.files.getlist('audio_files')
+
+        if not model_id or not files:
+            flash("Model and audio files are required.", "danger")
+            return render_template('upload_audio.html', models=models)
+
+        saved_files = []
+        results = []
+        
+        for file in files:
+            if file.filename.endswith('.wav'):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_AUDIO_FOLDER'], filename)
+                file.save(filepath)
+                saved_files.append(filepath)
+
+                # Run ASR inference
+                transcription = transcribe_audio(model_id, language, audio_file=filepath)  # Call the ASR function
+                
+                results.append({
+                    "filename": filename,
+                    "text": transcription["transcription"],
+                    "wer": transcription.get("wer", "N/A")  # If WER is calculated
+                })
+
+        return render_template(
+            'upload_audio.html', models=models, results=results, model_name=model_id, language_name=language
+        )
+
+    return render_template('upload_audio.html', models=models)
+
+
+# Helper function to get language name from code
+def get_language_name(code):
+    languages = {
+        'hi': 'Hindi',
+        'mr': 'Marathi',
+        'gu': 'Gujarati',
+        'or': 'Oriya',
+        'ta': 'Tamil',
+        'te': 'Telugu',
+        'en': 'English',
+        'other': 'Other'
+    }
+    return languages.get(code, code)
 
 if __name__ == '__main__':
     # Create uploads directory if it doesn't exist
